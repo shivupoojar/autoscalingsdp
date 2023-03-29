@@ -1,0 +1,19 @@
+{
+"application": "aeneas",
+"workload": ["jump","steady","fluctuation","spikes"],
+"functions":["aeneas","rawaeneas","getobject","scaling-aeneas-tocloud"],
+"approaches": ["keda+keda","keda+k8shpa","keda+rps","no+keda","no+k8shpa","no+rps"],
+"keda_config":{
+				"message_rate":[],
+				"QueueLength":[],
+				"queues":[]
+			   },
+"k8shpa_config": 
+{
+					"cpu_thresold": {"aeneas":50,"rawaeneas":50,"getobject":50,"scaling-aeneas-tocloud":50}
+},
+
+"minio_host":"172.17.141.197:9001",
+"bucket":"aeneas-output",
+"PROMETHEUS" : "http://172.17.141.197:30168/"
+}
