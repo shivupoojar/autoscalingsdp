@@ -1,0 +1,33 @@
+#from aeneas.executetask import ExecuteTask
+from aeneas.task import Task
+from aeneas.tools.execute_task import ExecuteTaskCLI
+import requests
+import json
+import random
+import os
+import uuid
+def save_file(filename, data):
+    with open("/tmp/"+filename, "wb") as out_file:
+      out_file.write(data)
+def handle(req):
+    """handle a request to the function
+    Args:
+        req (str): request body
+    """
+    json_data = json.loads(req)
+    #save_file("a.wav",req)
+    gateway=os.environ.get('gateway', '172.17.141.197:8080')
+    topic = os.environ.get('topic','tocloud')
+    exchange = os.environ.get('exchange','Dex')
+    RABBITMQ_CONNECTION = os.environ.get('RABBITMQ_CONNECTION','amqp://guest:guest@1
+    file = requests.post("http://"+gateway+"/function/getobject",data="p001.xhtml")
+    save_file("p001.xhtml",file.content)
+    output = str(uuid.uuid4())
+    ExecuteTaskCLI(use_sys=False).run(arguments=[None, u"/tmp/a.wav",u"/tmp/p001.xhtml",
+    u"task_language=eng|is_text_type=plain|os_task_file_format=json",
+    u"/tmp/"+output+".json"])
+    f = open("/tmp/"+output+".json")
+    output_data = f.read()
+    payload = bytes(output_data)
+    requests.post("http://"+gateway+"/function/pubrabbitmq",data=payload)
+    return "Success"

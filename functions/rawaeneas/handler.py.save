@@ -1,0 +1,26 @@
+import requests
+import json
+import random
+import os
+import time
+import uuid
+import io
+#import bytearray
+from minio import Minio
+def save_file(filename, data):
+    with open("/tmp/"+filename, "wb") as out_file:
+  print(req)
+    inputdata = req.decode('utf8')
+    save_file("a.wav",inputdata)
+    gateway=os.environ.get('gateway', '172.17.141.197:8080')
+    minio = os.getenv("minio",'172.17.141.197:9001')
+    accesskey = os.getenv("access_key",'minio')
+    secretkey = os.getenv("secret_key",'minio123')
+    name = str(time.time_ns())
+    mc = Minio(minio,access_key=accesskey,secret_key=secretkey,secure=False)
+    f = open("/tmp/a.wav", "rb")
+    idata = f.read()
+    mc.fput_object('raw',name+'.wav',idata)
+    payload ={"name": name}
+    requests.post("http://"+gateway+"/function/pubrabbitmq",data=payload)
+    return  "Success"

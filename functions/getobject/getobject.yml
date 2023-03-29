@@ -1,0 +1,24 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+functions:
+  getobject:
+    lang: python3-flask
+    handler: ./getobject
+    image: shivupoojar/scalinggetobject:v2
+    enviornment:
+      bucket: "aeneas"
+      minio: 172.17.141.197:9001
+      access_key: minio
+      secret_key: minio123
+      write_debug: true
+      write_timeout: 10m
+      read_timeout: 10m
+      exec_timeout: 10m
+    limits:
+      cpu: 500m
+      memory: 100Mi
+    requests:
+      cpu: 100m
+      memory: 50Mi

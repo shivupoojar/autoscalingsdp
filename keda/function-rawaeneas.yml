@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rabbitmq-consumer-secret
+  namespace: openfaas-fn
+data:
+  RabbitMqHost: aHR0cDovL2d1ZXN0Omd1ZXN0QDE3Mi4xNy4xNDEuMTk3OjE1Njcy
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: rabbitmq-rawaeneas
+  namespace: openfaas-fn
+spec:
+  scaleTargetRef:
+    name: rawaeneas
+  pollingInterval: 30 # Optional. Default: 30 seconds
+  cooldownPeriod: 30 # Optional. Default: 300 seconds
+  maxReplicaCount: 5 # Optional. Default: 100
+  triggers:
+    - type: rabbitmq
+      metadata:
+        protocol: http
+        mode: QueueLength
+        queueName: raw
+        value: "4"
+      authenticationRef:
+        name: rabbitmq-consumer-trigger
+    - type: rabbitmq
+      metadata:
+        protocol: http
+        mode: MessageRate
+        queueName: raw
+        value: "0.3"
+      authenticationRef:
+        name: rabbitmq-consumer-trigger 
+---
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: rabbitmq-consumer-trigger
+  namespace: openfaas-fn
+spec:
+  secretTargetRef:
+    - parameter: host
+      name: rabbitmq-consumer-secret
+      key: RabbitMqHost
+---
+

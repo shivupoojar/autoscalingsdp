@@ -1,0 +1,70 @@
+# Default values for amqp-connector.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+name: amqp-connector-aeneas
+replicaCount: 1
+
+image:
+  repository: shivupoojar/simonrabbitmqconnector3
+  pullPolicy: Always
+
+logger:
+  level: trace
+
+amqp:
+  connection:
+    existingPasswordSecret: 
+    existingUsernameSecret: 
+    host: 172.17.141.197 
+    hostname: 
+    reconnectLimit: 10
+    password: guest
+    port: 5672
+    reconnect: true
+    transport: tcp
+    username: guest
+  delivery:
+    maxAttempts: 1
+  receiver:
+    autoAccept: true
+    source: aeneas
+  receiverFlow:
+    manual: true
+    concurrentItems: 3
+    postProcessPause: 0
+  response:
+    replyQueue: tocloud
+    sendReply: true
+
+openfaas:
+  async: false
+  callbackUrl: 
+  existingPasswordSecret: 
+  existingUsernameSecret: 
+  function: aeneas
+  gateway: http://10.43.6.196:8080
+  password: DTu23jn88S85U0PXp0Elj7K5q
+  username: admin
+
+health:
+  port: 3000
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: amqp-connector
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+resources: {}
+
+affinity: {}
+
